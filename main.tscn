@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dkj2fyutdql8"]
+[gd_scene load_steps=18 format=3 uid="uid://dkj2fyutdql8"]
 
 [ext_resource type="Texture2D" uid="uid://crfmp2t1deehl" path="res://assets/fugen2.png" id="1_p0cyb"]
 [ext_resource type="Shader" path="res://ascii_demo.gdshader" id="2_8owth"]
@@ -10,6 +10,7 @@
 [ext_resource type="Shader" path="res://ascii_edges2.gdshader" id="6_3jwfe"]
 [ext_resource type="Shader" path="res://difference-of-gaussians.gdshader" id="6_nl0xl"]
 [ext_resource type="Texture2D" uid="uid://bh0x8yh47ns6y" path="res://assets/edgesASCII.png" id="7_6m74x"]
+[ext_resource type="Shader" path="res://ascii.gdshader" id="11_f63v1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4s04h"]
 shader = ExtResource("6_nl0xl")
@@ -45,6 +46,23 @@ shader_parameter/available_columns = 10
 shader_parameter/max_columns = 16
 shader_parameter/ascii_tex = ExtResource("3_jxe4i")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o63uj"]
+shader = ExtResource("11_f63v1")
+shader_parameter/_kernel = 5
+shader_parameter/_sigma = 2.0
+shader_parameter/_k = 1.6
+shader_parameter/_k2 = 1.6
+shader_parameter/_tau = 1.0
+shader_parameter/_dog_thresholding = true
+shader_parameter/_dog_threshold = 0.005
+shader_parameter/available_columns = 10
+shader_parameter/max_columns = 16
+shader_parameter/ascii_size = Vector2(8, 8)
+shader_parameter/edge_thresholding = true
+shader_parameter/edge_threshold = 0.3
+shader_parameter/ascii_tex = ExtResource("3_sr1qx")
+shader_parameter/ascii_edges_tex = ExtResource("7_6m74x")
+
 [node name="Main" type="Node"]
 
 [node name="Control" type="Control" parent="."]
@@ -63,7 +81,6 @@ grow_vertical = 2
 texture = ExtResource("3_pjwgn")
 
 [node name="FugenImage" type="TextureRect" parent="Control"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -73,7 +90,6 @@ grow_vertical = 2
 texture = ExtResource("1_p0cyb")
 
 [node name="BowserImage" type="TextureRect" parent="Control"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -83,6 +99,7 @@ grow_vertical = 2
 texture = ExtResource("2_gprje")
 
 [node name="DOGLayer" type="CanvasLayer" parent="Control"]
+visible = false
 
 [node name="DOGShader" type="ColorRect" parent="Control/DOGLayer"]
 material = SubResource("ShaderMaterial_4s04h")
@@ -93,6 +110,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SobelLayer" type="CanvasLayer" parent="Control"]
+visible = false
 
 [node name="SobelShader" type="ColorRect" parent="Control/SobelLayer"]
 material = SubResource("ShaderMaterial_1bv1h")
@@ -103,6 +121,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="AsciiEdgesLayer" type="CanvasLayer" parent="Control"]
+visible = false
 
 [node name="AsciiEdgesShader" type="ColorRect" parent="Control/AsciiEdgesLayer"]
 material = SubResource("ShaderMaterial_eqayo")
@@ -126,6 +145,16 @@ grow_vertical = 2
 [node name="DemoAsciiShader2" type="ColorRect" parent="Control/DemoAsciiLayer"]
 visible = false
 material = SubResource("ShaderMaterial_lska7")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CombinedLayer" type="CanvasLayer" parent="Control"]
+
+[node name="AsciiShader" type="ColorRect" parent="Control/CombinedLayer"]
+material = SubResource("ShaderMaterial_o63uj")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
