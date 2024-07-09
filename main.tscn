@@ -1,11 +1,13 @@
-[gd_scene load_steps=18 format=3 uid="uid://dkj2fyutdql8"]
+[gd_scene load_steps=20 format=3 uid="uid://dkj2fyutdql8"]
 
+[ext_resource type="Script" path="res://main.gd" id="1_n0dd8"]
 [ext_resource type="Texture2D" uid="uid://crfmp2t1deehl" path="res://assets/fugen2.png" id="1_p0cyb"]
 [ext_resource type="Shader" path="res://ascii_demo.gdshader" id="2_8owth"]
 [ext_resource type="Texture2D" uid="uid://cd4fbhs1fm5ou" path="res://assets/bowser.jpg" id="2_gprje"]
 [ext_resource type="Texture2D" uid="uid://cgpqtdipas0am" path="res://assets/ascii_demo.png" id="3_jxe4i"]
 [ext_resource type="Texture2D" uid="uid://dtcxh8hk16fe0" path="res://assets/mizu2.png" id="3_pjwgn"]
 [ext_resource type="Texture2D" uid="uid://b2svmg0u1a2be" path="res://assets/acerola_ascii.png" id="3_sr1qx"]
+[ext_resource type="Texture2D" uid="uid://bqlw7oh8j07iq" path="res://assets/circle.png" id="5_7trrj"]
 [ext_resource type="Shader" path="res://sobel.gdshader" id="5_y5n5o"]
 [ext_resource type="Shader" path="res://ascii_edges2.gdshader" id="6_3jwfe"]
 [ext_resource type="Shader" path="res://difference-of-gaussians.gdshader" id="6_nl0xl"]
@@ -48,15 +50,8 @@ shader_parameter/ascii_tex = ExtResource("3_jxe4i")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o63uj"]
 shader = ExtResource("11_f63v1")
-shader_parameter/_kernel = 5
-shader_parameter/_sigma = 2.0
-shader_parameter/_k = 1.6
-shader_parameter/_k2 = 1.6
-shader_parameter/_tau = 1.0
-shader_parameter/_dog_thresholding = true
-shader_parameter/_dog_threshold = 0.005
 shader_parameter/available_columns = 10
-shader_parameter/max_columns = 16
+shader_parameter/max_columns = 10
 shader_parameter/ascii_size = Vector2(8, 8)
 shader_parameter/edge_thresholding = true
 shader_parameter/edge_threshold = 0.3
@@ -64,6 +59,7 @@ shader_parameter/ascii_tex = ExtResource("3_sr1qx")
 shader_parameter/ascii_edges_tex = ExtResource("7_6m74x")
 
 [node name="Main" type="Node"]
+script = ExtResource("1_n0dd8")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -71,8 +67,27 @@ anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 
-[node name="MizuImage" type="TextureRect" parent="Control"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Control"]
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Control/SubViewportContainer"]
+size = Vector2i(1280, 720)
+
+[node name="Black" type="ColorRect" parent="Control/SubViewportContainer/SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="MizuImage" type="TextureRect" parent="Control/SubViewportContainer/SubViewport"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -80,8 +95,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_pjwgn")
 
-[node name="FugenImage" type="TextureRect" parent="Control"]
-layout_mode = 1
+[node name="FugenImage" type="TextureRect" parent="Control/SubViewportContainer/SubViewport"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -89,8 +103,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_p0cyb")
 
-[node name="BowserImage" type="TextureRect" parent="Control"]
-layout_mode = 1
+[node name="BowserImage" type="TextureRect" parent="Control/SubViewportContainer/SubViewport"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -98,8 +111,31 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_gprje")
 
+[node name="White" type="ColorRect" parent="Control/SubViewportContainer/SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Circle" type="TextureRect" parent="Control/SubViewportContainer/SubViewport/White"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -112.5
+offset_top = -112.5
+offset_right = 112.5
+offset_bottom = 112.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_7trrj")
+expand_mode = 4
+stretch_mode = 5
+
 [node name="DOGLayer" type="CanvasLayer" parent="Control"]
-visible = false
 
 [node name="DOGShader" type="ColorRect" parent="Control/DOGLayer"]
 material = SubResource("ShaderMaterial_4s04h")
@@ -110,7 +146,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SobelLayer" type="CanvasLayer" parent="Control"]
-visible = false
 
 [node name="SobelShader" type="ColorRect" parent="Control/SobelLayer"]
 material = SubResource("ShaderMaterial_1bv1h")
