@@ -30,7 +30,7 @@ shader = ExtResource("5_y5n5o")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eqayo"]
 shader = ExtResource("6_3jwfe")
 shader_parameter/ascii_size = Vector2(8, 8)
-shader_parameter/thresholding = false
+shader_parameter/thresholding = true
 shader_parameter/threshold = 0.3
 shader_parameter/ascii_tex = ExtResource("7_6m74x")
 
@@ -112,6 +112,7 @@ grow_vertical = 2
 texture = ExtResource("2_gprje")
 
 [node name="White" type="ColorRect" parent="Control/SubViewportContainer/SubViewport"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -136,6 +137,7 @@ expand_mode = 4
 stretch_mode = 5
 
 [node name="DOGLayer" type="CanvasLayer" parent="Control"]
+visible = false
 
 [node name="DOGShader" type="ColorRect" parent="Control/DOGLayer"]
 material = SubResource("ShaderMaterial_4s04h")
@@ -146,6 +148,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SobelLayer" type="CanvasLayer" parent="Control"]
+visible = false
 
 [node name="SobelShader" type="ColorRect" parent="Control/SobelLayer"]
 material = SubResource("ShaderMaterial_1bv1h")
@@ -167,7 +170,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="DemoAsciiLayer" type="CanvasLayer" parent="Control"]
-visible = false
 
 [node name="DemoAsciiShader" type="ColorRect" parent="Control/DemoAsciiLayer"]
 material = SubResource("ShaderMaterial_vxch8")
@@ -187,6 +189,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="CombinedLayer" type="CanvasLayer" parent="Control"]
+visible = false
 
 [node name="AsciiShader" type="ColorRect" parent="Control/CombinedLayer"]
 material = SubResource("ShaderMaterial_o63uj")

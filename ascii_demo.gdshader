@@ -28,7 +28,7 @@ void fragment() {
 	//COLOR = color;
 	
 	vec2 ascii_uv = fract(SCREEN_UV / SCREEN_PIXEL_SIZE / ascii_size);
-	ascii_uv.x = (1.0 - ascii_uv.x) / float(max_columns);
+	ascii_uv.x = ascii_uv.x / float(max_columns);
 	float col = floor(dot(color.rgb, MONOCHROME_SCALE) * float(available_columns)) / float(available_columns);
 	
 	COLOR = texture(ascii_tex, ascii_uv + vec2(col * (float(available_columns) / float(max_columns)), 0.0));

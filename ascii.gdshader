@@ -60,7 +60,7 @@ void fragment() {
 	if (direction >= 0){
 		COLOR = texture(ascii_edges_tex, ascii_uv + vec2(float(direction) * 0.2 + 0.2, 0.0));
 	} else {
-		//COLOR = texture(ascii_tex, ascii_uv2 + vec2(col * (float(available_columns) / float(max_columns)), 0.0));
+		COLOR = texture(ascii_tex, ascii_uv2 + vec2(col * (float(available_columns) / float(max_columns)), 0.0));
 	}
 	
 }
