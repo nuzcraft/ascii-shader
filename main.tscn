@@ -137,7 +137,6 @@ expand_mode = 4
 stretch_mode = 5
 
 [node name="DOGLayer" type="CanvasLayer" parent="Control"]
-visible = false
 
 [node name="DOGShader" type="ColorRect" parent="Control/DOGLayer"]
 material = SubResource("ShaderMaterial_4s04h")
@@ -148,7 +147,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SobelLayer" type="CanvasLayer" parent="Control"]
-visible = false
 
 [node name="SobelShader" type="ColorRect" parent="Control/SobelLayer"]
 material = SubResource("ShaderMaterial_1bv1h")
@@ -170,6 +168,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="DemoAsciiLayer" type="CanvasLayer" parent="Control"]
+visible = false
 
 [node name="DemoAsciiShader" type="ColorRect" parent="Control/DemoAsciiLayer"]
 material = SubResource("ShaderMaterial_vxch8")
@@ -189,7 +188,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="CombinedLayer" type="CanvasLayer" parent="Control"]
-visible = false
 
 [node name="AsciiShader" type="ColorRect" parent="Control/CombinedLayer"]
 material = SubResource("ShaderMaterial_o63uj")
