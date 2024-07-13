@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dkj2fyutdql8"]
+[gd_scene load_steps=21 format=3 uid="uid://dkj2fyutdql8"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_n0dd8"]
 [ext_resource type="Texture2D" uid="uid://crfmp2t1deehl" path="res://assets/fugen2.png" id="1_p0cyb"]
@@ -48,6 +48,9 @@ shader_parameter/available_columns = 10
 shader_parameter/max_columns = 16
 shader_parameter/ascii_tex = ExtResource("3_jxe4i")
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_4xcv2"]
+viewport_path = NodePath("Control/SubViewportContainer/SubViewport")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o63uj"]
 shader = ExtResource("11_f63v1")
 shader_parameter/available_columns = 10
@@ -55,6 +58,7 @@ shader_parameter/max_columns = 10
 shader_parameter/ascii_size = Vector2(8, 8)
 shader_parameter/edge_thresholding = true
 shader_parameter/edge_threshold = 0.3
+shader_parameter/VIEWPORT_TEXTURE = SubResource("ViewportTexture_4xcv2")
 shader_parameter/ascii_tex = ExtResource("3_sr1qx")
 shader_parameter/ascii_edges_tex = ExtResource("7_6m74x")
 
@@ -77,7 +81,9 @@ grow_vertical = 2
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="Control/SubViewportContainer"]
+handle_input_locally = false
 size = Vector2i(1280, 720)
+render_target_update_mode = 4
 
 [node name="Black" type="ColorRect" parent="Control/SubViewportContainer/SubViewport"]
 anchors_preset = 15
@@ -137,7 +143,6 @@ expand_mode = 4
 stretch_mode = 5
 
 [node name="DOGLayer" type="CanvasLayer" parent="Control"]
-visible = false
 
 [node name="DOGShader" type="ColorRect" parent="Control/DOGLayer"]
 material = SubResource("ShaderMaterial_4s04h")
@@ -148,7 +153,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SobelLayer" type="CanvasLayer" parent="Control"]
-visible = false
 
 [node name="SobelShader" type="ColorRect" parent="Control/SobelLayer"]
 material = SubResource("ShaderMaterial_1bv1h")
@@ -170,6 +174,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="DemoAsciiLayer" type="CanvasLayer" parent="Control"]
+visible = false
 
 [node name="DemoAsciiShader" type="ColorRect" parent="Control/DemoAsciiLayer"]
 material = SubResource("ShaderMaterial_vxch8")
