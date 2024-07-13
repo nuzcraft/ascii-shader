@@ -48,7 +48,7 @@ shader_parameter/available_columns = 10
 shader_parameter/max_columns = 16
 shader_parameter/ascii_tex = ExtResource("3_jxe4i")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_nremw"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_4xcv2"]
 viewport_path = NodePath("Control/SubViewportContainer/SubViewport")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o63uj"]
@@ -58,7 +58,7 @@ shader_parameter/max_columns = 10
 shader_parameter/ascii_size = Vector2(8, 8)
 shader_parameter/edge_thresholding = true
 shader_parameter/edge_threshold = 0.3
-shader_parameter/VIEWPORT_TEXTURE = SubResource("ViewportTexture_nremw")
+shader_parameter/VIEWPORT_TEXTURE = SubResource("ViewportTexture_4xcv2")
 shader_parameter/ascii_tex = ExtResource("3_sr1qx")
 shader_parameter/ascii_edges_tex = ExtResource("7_6m74x")
 
