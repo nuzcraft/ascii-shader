@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dkj2fyutdql8"]
+[gd_scene load_steps=24 format=3 uid="uid://dkj2fyutdql8"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_n0dd8"]
 [ext_resource type="Texture2D" uid="uid://crfmp2t1deehl" path="res://assets/fugen2.png" id="1_p0cyb"]
@@ -13,6 +13,7 @@
 [ext_resource type="Shader" path="res://difference-of-gaussians.gdshader" id="6_nl0xl"]
 [ext_resource type="Texture2D" uid="uid://bh0x8yh47ns6y" path="res://assets/edgesASCII.png" id="7_6m74x"]
 [ext_resource type="Shader" path="res://ascii.gdshader" id="11_f63v1"]
+[ext_resource type="Shader" path="res://packed_lum.gdshader" id="14_5mmxe"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4s04h"]
 shader = ExtResource("6_nl0xl")
@@ -48,8 +49,8 @@ shader_parameter/available_columns = 10
 shader_parameter/max_columns = 16
 shader_parameter/ascii_tex = ExtResource("3_jxe4i")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_4xcv2"]
-viewport_path = NodePath("Control/SubViewportContainer/SubViewport")
+[sub_resource type="ViewportTexture" id="ViewportTexture_egldm"]
+viewport_path = NodePath("Control/BaseViewportContainer/BaseSubViewport")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o63uj"]
 shader = ExtResource("11_f63v1")
@@ -58,9 +59,15 @@ shader_parameter/max_columns = 10
 shader_parameter/ascii_size = Vector2(8, 8)
 shader_parameter/edge_thresholding = true
 shader_parameter/edge_threshold = 0.3
-shader_parameter/VIEWPORT_TEXTURE = SubResource("ViewportTexture_4xcv2")
+shader_parameter/VIEWPORT_TEXTURE = SubResource("ViewportTexture_egldm")
 shader_parameter/ascii_tex = ExtResource("3_sr1qx")
 shader_parameter/ascii_edges_tex = ExtResource("7_6m74x")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1oiai"]
+shader = ExtResource("14_5mmxe")
+shader_parameter/VIEWPORT_TEXTURE = SubResource("ViewportTexture_egldm")
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_54e3n"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_n0dd8")
@@ -71,7 +78,8 @@ anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="Control"]
+[node name="BaseViewportContainer" type="SubViewportContainer" parent="Control"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -80,12 +88,12 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="Control/SubViewportContainer"]
+[node name="BaseSubViewport" type="SubViewport" parent="Control/BaseViewportContainer"]
 handle_input_locally = false
 size = Vector2i(1280, 720)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
-[node name="Black" type="ColorRect" parent="Control/SubViewportContainer/SubViewport"]
+[node name="Black" type="ColorRect" parent="Control/BaseViewportContainer/BaseSubViewport"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -93,7 +101,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="MizuImage" type="TextureRect" parent="Control/SubViewportContainer/SubViewport"]
+[node name="MizuImage" type="TextureRect" parent="Control/BaseViewportContainer/BaseSubViewport"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -101,7 +109,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_pjwgn")
 
-[node name="FugenImage" type="TextureRect" parent="Control/SubViewportContainer/SubViewport"]
+[node name="FugenImage" type="TextureRect" parent="Control/BaseViewportContainer/BaseSubViewport"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -109,7 +117,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_p0cyb")
 
-[node name="BowserImage" type="TextureRect" parent="Control/SubViewportContainer/SubViewport"]
+[node name="BowserImage" type="TextureRect" parent="Control/BaseViewportContainer/BaseSubViewport"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -117,7 +125,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_gprje")
 
-[node name="White" type="ColorRect" parent="Control/SubViewportContainer/SubViewport"]
+[node name="White" type="ColorRect" parent="Control/BaseViewportContainer/BaseSubViewport"]
 visible = false
 anchors_preset = 15
 anchor_right = 1.0
@@ -125,7 +133,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Circle" type="TextureRect" parent="Control/SubViewportContainer/SubViewport/White"]
+[node name="Circle" type="TextureRect" parent="Control/BaseViewportContainer/BaseSubViewport/White"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -142,9 +150,9 @@ texture = ExtResource("5_7trrj")
 expand_mode = 4
 stretch_mode = 5
 
-[node name="DOGLayer" type="CanvasLayer" parent="Control"]
+[node name="DOGLayer" type="CanvasLayer" parent="Control/BaseViewportContainer/BaseSubViewport"]
 
-[node name="DOGShader" type="ColorRect" parent="Control/DOGLayer"]
+[node name="DOGShader" type="ColorRect" parent="Control/BaseViewportContainer/BaseSubViewport/DOGLayer"]
 material = SubResource("ShaderMaterial_4s04h")
 anchors_preset = 15
 anchor_right = 1.0
@@ -152,9 +160,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SobelLayer" type="CanvasLayer" parent="Control"]
+[node name="SobelLayer" type="CanvasLayer" parent="Control/BaseViewportContainer/BaseSubViewport"]
 
-[node name="SobelShader" type="ColorRect" parent="Control/SobelLayer"]
+[node name="SobelShader" type="ColorRect" parent="Control/BaseViewportContainer/BaseSubViewport/SobelLayer"]
 material = SubResource("ShaderMaterial_1bv1h")
 anchors_preset = 15
 anchor_right = 1.0
@@ -162,10 +170,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="AsciiEdgesLayer" type="CanvasLayer" parent="Control"]
+[node name="SobelViewportContainer" type="SubViewportContainer" parent="Control"]
+visible = false
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+stretch = true
+
+[node name="SobelSubViewport" type="SubViewport" parent="Control/SobelViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+size_2d_override = Vector2i(1280, 720)
+size_2d_override_stretch = true
+render_target_update_mode = 0
+
+[node name="AsciiEdgesLayer" type="CanvasLayer" parent="Control/SobelViewportContainer/SobelSubViewport"]
 visible = false
 
-[node name="AsciiEdgesShader" type="ColorRect" parent="Control/AsciiEdgesLayer"]
+[node name="AsciiEdgesShader" type="ColorRect" parent="Control/SobelViewportContainer/SobelSubViewport/AsciiEdgesLayer"]
 material = SubResource("ShaderMaterial_eqayo")
 anchors_preset = 15
 anchor_right = 1.0
@@ -173,10 +195,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="DemoAsciiLayer" type="CanvasLayer" parent="Control"]
+[node name="DemoAsciiLayer" type="CanvasLayer" parent="Control/SobelViewportContainer/SobelSubViewport"]
 visible = false
 
-[node name="DemoAsciiShader" type="ColorRect" parent="Control/DemoAsciiLayer"]
+[node name="DemoAsciiShader" type="ColorRect" parent="Control/SobelViewportContainer/SobelSubViewport/DemoAsciiLayer"]
 material = SubResource("ShaderMaterial_vxch8")
 anchors_preset = 15
 anchor_right = 1.0
@@ -184,7 +206,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="DemoAsciiShader2" type="ColorRect" parent="Control/DemoAsciiLayer"]
+[node name="DemoAsciiShader2" type="ColorRect" parent="Control/SobelViewportContainer/SobelSubViewport/DemoAsciiLayer"]
 visible = false
 material = SubResource("ShaderMaterial_lska7")
 anchors_preset = 15
@@ -193,13 +215,57 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CombinedLayer" type="CanvasLayer" parent="Control"]
+[node name="CombinedLayer" type="CanvasLayer" parent="Control/SobelViewportContainer/SobelSubViewport"]
 visible = false
 
-[node name="AsciiShader" type="ColorRect" parent="Control/CombinedLayer"]
+[node name="AsciiShader" type="ColorRect" parent="Control/SobelViewportContainer/SobelSubViewport/CombinedLayer"]
 material = SubResource("ShaderMaterial_o63uj")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="LumViewportContainer" type="SubViewportContainer" parent="Control"]
+visible = false
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+stretch = true
+
+[node name="LumSubViewport" type="SubViewport" parent="Control/LumViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+size_2d_override = Vector2i(1280, 720)
+size_2d_override_stretch = true
+render_target_update_mode = 0
+
+[node name="PackedLuminanceLayer" type="CanvasLayer" parent="Control/LumViewportContainer/LumSubViewport"]
+
+[node name="PackedLuminanceShader" type="ColorRect" parent="Control/LumViewportContainer/LumSubViewport/PackedLuminanceLayer"]
+material = SubResource("ShaderMaterial_1oiai")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FinalViewportContainer" type="SubViewportContainer" parent="Control"]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="FinalSubViewport" type="SubViewport" parent="Control/FinalViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="FinalTexture" type="TextureRect" parent="Control/FinalViewportContainer/FinalSubViewport"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("CompressedTexture2D_54e3n")
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

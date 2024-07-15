@@ -3,26 +3,29 @@
 
 #define PI 3.14159265358979323846f
 
-// Invocations in the (x, y, z) dimension
-layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+// declare shader parameters
+// we do not need to rewrite them here so the variable is readonly
+layout(set = 0, binding = 0, std430) readonly buffer custom_parameters {
+	float brightness;
+	float contrast;
+} parameters;
 
-// A binding to the buffer we create in our script
-layout(set = 0, binding = 0, std430) restrict buffer MyDataBuffer {
-	float data[];
-}
-my_data_buffer;
 
-// layout(set = 1, binding = 0) uniform sampler2D INPUT_TEXTURE;
-
-layout(set = 1, binding = 0, rgba32f) uniform image2D OUTPUT_TEXTURE;
+// declare texture inputs
+// the format should match the one we specified in the Godot script
+layout(set = 0, binding = 1, rgba32f) readonly uniform image2D sobel_texture;
+layout(set = 0, binding = 2, rgba32f) readonly uniform image2D lum_texture;
+layout(set = 0, binding = 3, rgba32f) writeonly restrict uniform image2D output_texture;
 
 // The code we want to execute in each invocation
 void main() {
-	// gl_GlobalInvocationID.x uniquely identifies this invocation across all work groups
-	my_data_buffer.data[gl_GlobalInvocationID.x] *= PI;
+	// get texel coordinates
+	ivec2 texel_coords = ivec2(gl_GlobalInvocationID.xy);
 
-	// messing with colors
-	vec4 color = vec4(gl_GlobalInvocationID.x / 200.0, 1.0 - (gl_GlobalInvocationID.y / 200.0), 0.0, 0.0);
-	ivec2 texel = ivec2(gl_GlobalInvocationID.xy);
-	imageStore(OUTPUT_TEXTURE, texel, color);
+	// read pixels from input texture
+	vec4 sobel_texel = imageLoad(sobel_texture, texel_coords);
+	vec4 lum_texel = imageLoad(lum_texture, texel_coords);
+
+	// write the pixels to output texture
+	imageStore(output_texture, texel_coords, lum_texel);
 }
