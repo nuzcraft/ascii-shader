@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dkj2fyutdql8"]
+[gd_scene load_steps=23 format=3 uid="uid://dkj2fyutdql8"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_n0dd8"]
 [ext_resource type="Texture2D" uid="uid://crfmp2t1deehl" path="res://assets/fugen2.png" id="1_p0cyb"]
@@ -67,8 +67,6 @@ shader_parameter/ascii_edges_tex = ExtResource("7_6m74x")
 shader = ExtResource("14_5mmxe")
 shader_parameter/VIEWPORT_TEXTURE = SubResource("ViewportTexture_egldm")
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_54e3n"]
-
 [node name="Main" type="Node"]
 script = ExtResource("1_n0dd8")
 
@@ -79,6 +77,7 @@ offset_right = 1280.0
 offset_bottom = 720.0
 
 [node name="BaseViewportContainer" type="SubViewportContainer" parent="Control"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -90,7 +89,7 @@ stretch = true
 [node name="BaseSubViewport" type="SubViewport" parent="Control/BaseViewportContainer"]
 handle_input_locally = false
 size = Vector2i(1280, 720)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="Black" type="ColorRect" parent="Control/BaseViewportContainer/BaseSubViewport"]
 anchors_preset = 15
@@ -125,7 +124,6 @@ grow_vertical = 2
 texture = ExtResource("2_gprje")
 
 [node name="White" type="ColorRect" parent="Control/BaseViewportContainer/BaseSubViewport"]
-visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -249,20 +247,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="FinalViewportContainer" type="SubViewportContainer" parent="Control"]
-layout_mode = 0
+[node name="FinalTexture" type="TextureRect" parent="."]
 offset_right = 1280.0
 offset_bottom = 720.0
-
-[node name="FinalSubViewport" type="SubViewport" parent="Control/FinalViewportContainer"]
-handle_input_locally = false
-size = Vector2i(1280, 720)
-render_target_update_mode = 4
-
-[node name="FinalTexture" type="TextureRect" parent="Control/FinalViewportContainer/FinalSubViewport"]
-offset_right = 40.0
-offset_bottom = 40.0
-texture = SubResource("CompressedTexture2D_54e3n")
 
 [node name="Timer" type="Timer" parent="."]
 autostart = true

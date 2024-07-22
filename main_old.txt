@@ -11,27 +11,19 @@ extends Node
 @onready var dog_layer: CanvasLayer = $Control/BaseViewportContainer/BaseSubViewport/DOGLayer
 @onready var sobel_layer: CanvasLayer = $Control/BaseViewportContainer/BaseSubViewport/SobelLayer
 
-const BOWSER = preload("res://assets/bowser.jpg")
-const BOWER_LUM = preload("res://assets/bower_lum.png")
-const BOWSER_SOBEL = preload("res://assets/bowser_sobel.png")
-const EDGES_ASCII = preload("res://assets/edgesASCII.png")
-const ACEROLA_ASCII = preload("res://assets/acerola_ascii.png")
 
+const BOWSER = preload("res://assets/bowser.jpg")
 @export var image_format := Image.FORMAT_RGBAF
 var image_size: Vector2
 #var base_image: Image
 var sobel_image: Image
 var lum_image: Image
-var ascii_edge_image: Image
-var ascii_image: Image
 # SHADER VARIABLES
 @export_file("*.glsl") var shader_path: String = "res://ascii_compute.glsl"
 var compute_shader: ComputeHelper
 var shader_groups: Vector3i
 var sobel_texture: ImageUniform
-var lum_texture: SamplerUniform
-var ascii_edge_texture: ImageUniform
-var ascii_texture: ImageUniform
+var lum_texture: ImageUniform
 var output_texture: ImageUniform
 var shader_parameters_buffer: StorageBufferUniform
 var shader_parameters: Array = [0.0, 0.0]
@@ -39,10 +31,10 @@ var shader_parameters: Array = [0.0, 0.0]
 func _ready() -> void:
 	#dog_layer.hide()
 	#sobel_layer.hide()
-	#await RenderingServer.frame_post_draw
-	#var base_texture : ViewportTexture = base_sub_viewport.get_texture()
+	await RenderingServer.frame_post_draw
+	var base_texture : ViewportTexture = base_sub_viewport.get_texture()
 	#dog_shader.material.set_shader_parameter("VIEWPORT_TEXTURE", base_texture)
-	#packed_luminance_shader.material.set_shader_parameter("VIEWPORT_TEXTURE", base_texture)
+	packed_luminance_shader.material.set_shader_parameter("VIEWPORT_TEXTURE", base_texture)
 	#ascii_shader.material.set_shader_parameter("VIEWPORT_TEXTURE", base_texture)
 	#sobel_image = sobel_sub_viewport.get_texture().get_image()
 	#lum_image = lum_sub_viewport.get_texture().get_image()
@@ -110,15 +102,6 @@ func _ready() -> void:
 	#var image := Image.create_from_data(width, height, false, Image.FORMAT_RGBAF, byte_data)
 	#image.save_png('res://image.png')
 	
-	sobel_image = BOWSER_SOBEL.get_image()
-	lum_image = BOWER_LUM.get_image()
-	ascii_edge_image = EDGES_ASCII.get_image()
-	ascii_image = ACEROLA_ASCII.get_image()
-	sobel_image.convert(image_format)
-	lum_image.convert(image_format)
-	ascii_edge_image.convert(image_format)
-	ascii_image.convert(image_format)
-	
 	RenderingServer.call_on_render_thread(init_shader)
 	pass
 	
@@ -126,28 +109,22 @@ func init_shader():
 	# convert image to specified format
 	#dog_layer.show()
 	#sobel_layer.show()
-	#$Control/LumViewportContainer.show()
-	#await RenderingServer.frame_post_draw
-	#sobel_image = base_sub_viewport.get_texture().get_image()
-	#sobel_image.convert(image_format)
-	#sobel_image.save_png("res://sobel.png")
-	#lum_image = lum_sub_viewport.get_texture().get_image()
-	#lum_image.convert(image_format)
+	$Control/LumViewportContainer.show()
+	await RenderingServer.frame_post_draw
+	sobel_image = base_sub_viewport.get_texture().get_image()
+	sobel_image.convert(image_format)
+	sobel_image.save_png("res://sobel.png")
+	lum_image = lum_sub_viewport.get_texture().get_image()
+	lum_image.convert(image_format)
 	#lum_image.save_png("res://lum.png")
-	#ascii_edge_image.convert(image_format)
-	#ascii_image.convert(image_format)
 	image_size = sobel_image.get_size()
-	shader_parameters[0] = float(image_size.x)
-	shader_parameters[1] = float(image_size.y)
 	
 	final_texture.texture = Texture2DRD.new()
 	
 	compute_shader = ComputeHelper.create(shader_path)
 	
 	sobel_texture = ImageUniform.create(sobel_image)
-	lum_texture = SamplerUniform.create(lum_image)
-	ascii_edge_texture = ImageUniform.create(ascii_edge_image)
-	ascii_texture = ImageUniform.create(ascii_image)
+	lum_texture = ImageUniform.create(lum_image)
 	output_texture = ImageUniform.create(sobel_image)
 	final_texture.texture.texture_rd_rid = output_texture.texture
 	
@@ -156,20 +133,17 @@ func init_shader():
 	var z_groups = 1
 	shader_groups = Vector3i(x_groups, y_groups, z_groups)
 	
-	shader_parameters_buffer = StorageBufferUniform.create(PackedFloat32Array([image_size.x, image_size.y]).to_byte_array())
+	shader_parameters_buffer = StorageBufferUniform.create(PackedFloat32Array([0.0]).to_byte_array())
 	
-	compute_shader.add_uniform_array([shader_parameters_buffer, sobel_texture, lum_texture, ascii_edge_texture, ascii_texture, output_texture])
-	compute_shader.run(shader_groups)
+	compute_shader.add_uniform_array([shader_parameters_buffer, lum_texture, sobel_texture, output_texture])
 
 func update_shader(shader_parameters):
 	# sent shader_parameters to shader
 	shader_parameters_buffer.update_data(PackedFloat32Array(shader_parameters).to_byte_array())
 	compute_shader.run(shader_groups)
 	output_texture.get_image().save_png("res://test.png")
-	#var tex: Texture2D = ImageTexture.create_from_image(output_texture.get_image())
-	#final_texture.texture = tex
-	final_texture.texture.texture_rd_rid = output_texture.texture
-	print("updating shader")
+	var tex: Texture2D = ImageTexture.create_from_image(output_texture.get_image())
+	final_texture.texture = tex
 
 func _process(delta: float) -> void:
 	RenderingServer.call_on_render_thread(update_shader)
